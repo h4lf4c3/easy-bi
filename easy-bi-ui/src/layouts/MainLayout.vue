@@ -39,16 +39,15 @@
         </el-menu>
       </div>
       <div class="header-right">
-        <el-dropdown>
+        <el-dropdown @command="handleCommand">
           <span class="user-info">
-            <el-avatar :size="32" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
-            <span>管理员</span>
+            <el-avatar :size="32" :src="userStore.avatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" />
+            <span>{{ userStore.name || userStore.username }}</span>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>个人信息</el-dropdown-item>
-              <el-dropdown-item>修改密码</el-dropdown-item>
-              <el-dropdown-item divided>退出登录</el-dropdown-item>
+              <el-dropdown-item command="profile">个人信息</el-dropdown-item>
+              <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -84,9 +83,16 @@ const toggleSidebar = () => {
   isCollapse.value = !isCollapse.value
 }
 
-const handleLogout = () => {
-  userStore.logout()
-  router.push('/login')
+const handleCommand = (command) => {
+  switch (command) {
+    case 'profile':
+      router.push('/profile')
+      break
+    case 'logout':
+      userStore.logout()
+      router.push('/login')
+      break
+  }
 }
 </script>
 
@@ -204,4 +210,4 @@ const handleLogout = () => {
   margin-right: 4px;
   font-size: 18px;
 }
-</style> 
+</style>

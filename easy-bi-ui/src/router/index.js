@@ -37,6 +37,11 @@ const routes = [
         path: 'datasource/create',
         name: 'CreateDataSource',
         component: () => import('../views/DataSource/CreateDataSource.vue')
+      },
+      {
+        path: 'profile',
+        name: 'Profile',
+        component: () => import('../views/Profile.vue')
       }
     ]
   },
@@ -55,4 +60,4 @@ const router = createRouter({
 // 设置路由守卫
 setupRouterGuard(router)
 
-export default router 
+export default router

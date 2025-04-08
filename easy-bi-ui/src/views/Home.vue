@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <el-row :gutter="20">
-      <el-col :span="6">
+      <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
         <el-card shadow="hover" class="stat-card">
           <template #header>
             <div class="card-header">
@@ -15,7 +15,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
         <el-card shadow="hover" class="stat-card">
           <template #header>
             <div class="card-header">
@@ -29,7 +29,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
         <el-card shadow="hover" class="stat-card">
           <template #header>
             <div class="card-header">
@@ -43,7 +43,7 @@
           </div>
         </el-card>
       </el-col>
-      <el-col :span="6">
+      <el-col :xs="24" :sm="12" :md="6" :lg="6" :xl="6">
         <el-card shadow="hover" class="stat-card">
           <template #header>
             <div class="card-header">
@@ -60,7 +60,7 @@
     </el-row>
 
     <el-row :gutter="20" class="chart-row">
-      <el-col :span="16">
+      <el-col :xs="24" :sm="24" :md="16" :lg="16" :xl="16">
         <el-card shadow="hover">
           <template #header>
             <div class="card-header">
@@ -70,7 +70,7 @@
           <div ref="trendChart" class="chart"></div>
         </el-card>
       </el-col>
-      <el-col :span="8">
+      <el-col :xs="24" :sm="24" :md="8" :lg="8" :xl="8">
         <el-card shadow="hover">
           <template #header>
             <div class="card-header">
@@ -85,16 +85,24 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import * as echarts from 'echarts'
 import { Connection, DataLine, PieChart, User } from '@element-plus/icons-vue'
 
 const trendChart = ref(null)
 const sourceChart = ref(null)
+let trend = null
+let source = null
+
+// 处理图表resize
+const handleResize = () => {
+  trend?.resize()
+  source?.resize()
+}
 
 onMounted(() => {
   // 初始化趋势图
-  const trend = echarts.init(trendChart.value)
+  trend = echarts.init(trendChart.value)
   trend.setOption({
     tooltip: {
       trigger: 'axis'
@@ -114,7 +122,7 @@ onMounted(() => {
   })
 
   // 初始化数据源分布图
-  const source = echarts.init(sourceChart.value)
+  source = echarts.init(sourceChart.value)
   source.setOption({
     tooltip: {
       trigger: 'item'
@@ -144,16 +152,31 @@ onMounted(() => {
       }
     ]
   })
+
+  // 添加resize事件监听
+  window.addEventListener('resize', handleResize)
+})
+
+onUnmounted(() => {
+  // 移除resize事件监听
+  window.removeEventListener('resize', handleResize)
+  // 销毁图表实例
+  trend?.dispose()
+  source?.dispose()
 })
 </script>
 
 <style scoped>
 .home {
-  padding: 20px;
+  padding: 10px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .stat-card {
   margin-bottom: 20px;
+  height: 100%;
 }
 
 .card-header {
@@ -164,7 +187,7 @@ onMounted(() => {
 
 .card-content {
   text-align: center;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 .number {
@@ -181,9 +204,21 @@ onMounted(() => {
 
 .chart-row {
   margin-top: 20px;
+  flex: 1;
+  min-height: 0;
+}
+
+.chart-row .el-card :deep(.el-card__body) {
+  padding: 10px;
+}
+
+.chart-row .el-card :deep(.el-card__header) {
+  padding: 10px 15px;
 }
 
 .chart {
-  height: 300px;
+  height: 100%;
+  min-height: 220px;
+  width: 100%;
 }
-</style> 
+</style>
